@@ -23,7 +23,7 @@ class TreeNode:
 def size(NumTree):
     if NumTree == 'mt':
         return 0
-    return 1 + size(TreeNode(NumTree.value, NumTree.right, NumTree.left,))
+    return 1 + size(NumTree.left) + size(NumTree.right)
 
 # * 2:
 # NumTree -> number
@@ -33,42 +33,83 @@ def num_leaves(NumTree):
     if NumTree == 'mt':
         return 0
     if NumTree.right == 'mt' and NumTree.left == 'mt':
-        leaves += 1
+        return 1
+    a = 0
+    b = 0
     if NumTree.right!= 'mt':
-        num_leaves(NumTree.right)
+        a = num_leaves(NumTree.right)
     if NumTree.left != 'mt' :
-        num_leaves(NumTree.left)
+        b = num_leaves(NumTree.left)
+    return a + b
 
 
 # * 3:
 # NumTree -> number
 # Returns the sum of the numbers in the tree
 def sum(NumTree):
-    total = 0
     if NumTree == 'mt':
-        return total
-    if NumTree.left == 'mt' and NumTree.right == 'mt':
-        return total
-    return sum(NumTree.right) + sum(NumTree.left)
+        return 0
+    return NumTree.value + sum(NumTree.right) + sum(NumTree.left)
 
 
 # * 4:
 # NumTree -> number
 # Returns the length from the root to the leaves
 def height(NumTree):
+    if NumTree == 'mt':
+        return 0
+    if NumTree.right != 'mt':
+        a =1 + height(NumTree.right)
+    if NumTree.left != 'mt':
+        b = 1 + height(NumTree.left)
+    if a >= b:
+        return a
+    if b >= a:
+        return b
 
 # * 5:
 # NumTree -> Boolean
 # Returns true when a node has a leave that is triple the node
 def has_triple(NumTree):
+    if NumTree == 'mt':
+        return 'false'
+    if NumTree.right != 'mt' and NumTree.value == 3 * NumTree.right.value:
+        return 'true'
+    if NumTree.left != 'mt' and NumTree.value == 3 * NumTree.left.value:
+        return 'true'
+    return has_triple(NumTree.left) or has_triple(NumTree.right)
 
 # * 6:
 # NumTree -> NumTree
 # Returns a new tree with each element smaller by 1
+def sub_one_map(NumTree):
+    if NumTree == 'mt':
+        return 'mt'
+    return TreeNode(NumTree.value - 1, sub_one_map(NumTree.right), sub_one_map(NumTree.left))
+
 
 # * Tests : the test case class for the tree functions
 
 class TestAll (unittest.TestCase):
+
+    def test_size(self):
+        self.assertEqual(size(TreeNode(3, TreeNode(4, 'mt',  'mt'), TreeNode(5,'mt','mt'))),3)
+        self.assertEqual(size(TreeNode(3,TreeNode(4, TreeNode(8, 'mt','mt'), TreeNode(12,'mt','mt'), TreeNode(5, 'mt', 'mt')))),5)
+
+    def test_num_leaves(self):
+        self.assertEqual(num_leaves(TreeNode(3, TreeNode(4,'mt', 'mt'),TreeNode(5,'mt','mt'))), 2)
+
+    def test_sum(self):
+        self.assertEqual(sum(TreeNode(3, TreeNode(4,'mt','mt'), TreeNode(5,'mt','mt'))),12)
+
+    def test_height(self):
+        self.assertEqual(height(TreeNode(3, TreeNode(4, TreeNode(6,'mt','mt'), 'mt'), TreeNode(5, 'mt', 'mt'))), 2)
+
+    def test_has_triple(self):
+        self.assertEqual(has_triple(TreeNode(3, TreeNode(2, TreeNode(6, 'mt', 'mt'), 'mt'), TreeNode(5, 'mt', 'mt'))), 'true')
+
+    def test_sub_one_map(self):
+        self.assertEqual(sub_one_map(TreeNode(3, TreeNode(4, 'mt', 'mt'), TreeNode(5, 'mt', 'mt'))),TreeNode(2, TreeNode(3, 'mt', 'mt'), TreeNode(4, 'mt', 'mt')))
 
     if (__name__ == '__main__'):
         unittest.main()
